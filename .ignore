@@ -1,0 +1,27 @@
+컴파일된 파일들 제외
+
+/target/
+/bin/
+*.class
+
+이클립스/STS 설정 파일 제외
+
+.settings/
+.classpath
+.project
+.sts4-cache/
+
+인텔리제이 설정 파일 제외
+
+.idea/
+*.iml
+
+OS 파일 제외
+
+.DS_Store
+Thumbs.db
+
+로그 파일 제외
+
+*.log
+

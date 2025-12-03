@@ -43,7 +43,7 @@
     <!-- 헤더 영역 -->
     <div class="ranking-header mt-5">
         <div class="container text-center">
-            <h1 class="fw-bold mb-2">🏆 인기 게시물 한 눈에 보기</h1>
+            <h1 class="fw-bold mb-2">인기 게시물 한 눈에 보기</h1>
             <p class="opacity-75">사용자들이 가장 많이 공감한 게시글 순위입니다.</p>
         </div>
     </div>
@@ -101,5 +101,10 @@
         </div>
     </div>
 
+	<!-- Footer -->
+	<footer class="text-center py-4 text-muted border-top mt-5 bg-white">
+	    <small>&copy; 2025 IT Service KIM Project. All rights reserved.</small>
+	</footer>
+	
 </body>
 </html>

@@ -6,6 +6,7 @@ public class ReplyDo {
     private String r_writer;
     private String r_content;
     private String r_reg_date;
+    private int rWriterId;
 
     // Getter & Setter
     public int getR_no() { return r_no; }
@@ -18,4 +19,7 @@ public class ReplyDo {
     public void setR_content(String r_content) { this.r_content = r_content; }
     public String getR_reg_date() { return r_reg_date; }
     public void setR_reg_date(String r_reg_date) { this.r_reg_date = r_reg_date; }
+    public int getrWriterId() { return rWriterId; }
+    public void setrWriterId(int rWriterId) { this.rWriterId = rWriterId; }
+
 }

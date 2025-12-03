@@ -25,7 +25,10 @@ public class BoardControllerSpring {
     
     @Autowired
     BoardDaoSpring bdaoSpring;
-
+    
+    @Autowired
+    com.springboot.springjdbc.model.MemberDao memberDao;
+    
     @RequestMapping(value="/login.do")
     public String login() { return "login"; }
 
@@ -38,6 +41,47 @@ public class BoardControllerSpring {
         return "getBoardListView";
     }
 
+    
+ // 회원가입 페이지 이동
+    @RequestMapping(value="/signup.do")
+    public String signup() {
+        return "signup"; // signup.jsp
+    }
+
+    // 회원가입 처리
+    @RequestMapping(value="/signupProc.do")
+    public String signupProc(MemberDo member) {
+        // 이미 가입된 이메일인지 확인
+        MemberDo existing = memberDao.findByEmail(member.getEmail());
+        if (existing != null) {
+            // 중복이면 다시 가입 페이지로 (에러 파라미터 추가 가능)
+            return "redirect:signup.do?error=duplicate";
+        }
+        
+        // 가입 진행
+        memberDao.insertMemberLocal(member);
+        return "redirect:login.do"; // 가입 후 로그인 페이지로
+    }
+
+    // 로컬 로그인 처리
+    @RequestMapping(value="/loginProc.do")
+    public String loginProc(@RequestParam("email") String email, 
+                            @RequestParam("password") String password,
+                            HttpSession session) {
+        
+        // ID/PW 확인
+        MemberDo member = memberDao.loginCheck(email, password);
+        
+        if (member != null) {
+            // 로그인 성공 -> 세션에 저장
+            session.setAttribute("member", member);
+            return "redirect:getBoardList.do";
+        } else {
+            // 로그인 실패 -> 다시 로그인 페이지로
+            return "redirect:login.do?error=invalid";
+        }
+    }
+    
     // ★★★글쓰기 처리 부분 ★★★
     @RequestMapping(value="/insertBoardProc.do")
     public String insertBoardProc(BoardDo bdo, 
@@ -49,7 +93,6 @@ public class BoardControllerSpring {
         
         if (member != null) {
             bdo.setWriter(member.getName()); 
-            // ★★★ 여기가 제일 중요합니다! 회원 번호(m_no)를 writerId에 넣어야 0이 안 됩니다 ★★★
             bdo.setWriterId(member.getM_no()); 
         } else {
             return "redirect:login.do";
@@ -171,12 +214,48 @@ public class BoardControllerSpring {
         return "getOneBoard";
     }
 
-
+    // 댓글 등록
     @RequestMapping(value="/addReply.do")
     public String addReply(ReplyDo rdo, HttpSession session) {
         MemberDo member = (MemberDo) session.getAttribute("member");
-        if(member != null) rdo.setR_writer(member.getName());
+        if(member != null) {
+            rdo.setR_writer(member.getName());
+            rdo.setrWriterId(member.getM_no()); // ★ 회원번호 저장
+        } else {
+            return "redirect:login.do";
+        }
         bdaoSpring.insertReply(rdo);
+        return "redirect:getOneBoard.do?seq=" + rdo.getB_no();
+    }
+    
+ // 댓글 삭제 처리
+    @RequestMapping(value="/deleteReply.do")
+    public String deleteReply(@RequestParam("r_no") int r_no, @RequestParam("b_no") int b_no, HttpSession session) {
+        
+        MemberDo member = (MemberDo) session.getAttribute("member");
+        ReplyDo reply = bdaoSpring.getOneReply(r_no); // 댓글 정보 가져오기
+        
+        // 로그인했고, (본인이거나 관리자면) 삭제
+        if (member != null && reply != null && 
+           (member.getM_no() == reply.getrWriterId() || "ADMIN".equals(member.getRole()))) {
+            bdaoSpring.deleteReply(r_no);
+        }
+        
+        return "redirect:getOneBoard.do?seq=" + b_no; // 원래 글 번호(b_no)로 돌아감
+    }
+
+    // 댓글 수정 처리
+    @RequestMapping(value="/updateReply.do")
+    public String updateReply(ReplyDo rdo, HttpSession session) {
+        
+        MemberDo member = (MemberDo) session.getAttribute("member");
+        ReplyDo originReply = bdaoSpring.getOneReply(rdo.getR_no());
+        
+        // 본인인지 확인
+        if (member != null && originReply != null && member.getM_no() == originReply.getrWriterId()) {
+            bdaoSpring.updateReply(rdo);
+        }
+        
         return "redirect:getOneBoard.do?seq=" + rdo.getB_no();
     }
     

@@ -92,15 +92,38 @@ public class BoardDaoSpring {
         String sql = "update board set vote_count = vote_count + 1 where no=?";
         jdbcTemplate.update(sql, seq);
     }
-    public void insertReply(ReplyDo rdo) {
-        String sql = "insert into reply (b_no, r_writer, r_content, r_reg_date) values(?, ?, ?, now())";
-        jdbcTemplate.update(sql, rdo.getB_no(), rdo.getR_writer(), rdo.getR_content());
-    }
-    public ArrayList<ReplyDo> getReplyList(int b_no) {
-        String sql = "select * from reply where b_no=? order by r_no desc";
-        Object[] args = {b_no};
-        return (ArrayList<ReplyDo>)jdbcTemplate.query(sql, args, new ReplyRowMapper());
-    }
+ // 댓글 등록 (수정됨: r_writer_id 추가)
+ 	public void insertReply(ReplyDo rdo) {
+ 		System.out.println("(Spring JDBC) 댓글 등록 처리 !!");
+ 		String sql = "insert into reply (b_no, r_writer, r_content, r_reg_date, r_writer_id) values(?, ?, ?, now(), ?)";
+ 		jdbcTemplate.update(sql, rdo.getB_no(), rdo.getR_writer(), rdo.getR_content(), rdo.getrWriterId());
+ 	}
+
+     //  댓글 수정
+     public void updateReply(ReplyDo rdo) {
+         String sql = "update reply set r_content=? where r_no=?";
+         jdbcTemplate.update(sql, rdo.getR_content(), rdo.getR_no());
+     }
+
+     //  댓글 삭제
+     public void deleteReply(int r_no) {
+         String sql = "delete from reply where r_no=?";
+         jdbcTemplate.update(sql, r_no);
+     }
+
+     //  댓글 하나 조회 (본인 확인용)
+     public ReplyDo getOneReply(int r_no) {
+         String sql = "select * from reply where r_no=?";
+         return jdbcTemplate.queryForObject(sql, new Object[]{r_no}, new ReplyRowMapper());
+     }
+
+ 	//  댓글 목록 가져오기 (RowMapper는 아래 클래스 참고)
+ 	public ArrayList<ReplyDo> getReplyList(int b_no) {
+ 		System.out.println("(Spring JDBC) 댓글 목록 조회 !!");
+ 		String sql = "select * from reply where b_no=? order by r_no desc";
+ 		Object[] args = {b_no};
+ 		return (ArrayList<ReplyDo>)jdbcTemplate.query(sql, args, new ReplyRowMapper());
+ 	}
     
     public void updateViewCount(int seq) {
         System.out.println("(Spring JDBC) 조회수 증가 !!");
@@ -147,6 +170,7 @@ class ReplyRowMapper implements RowMapper<ReplyDo>{
         rdo.setR_writer(rs.getString("r_writer"));
         rdo.setR_content(rs.getString("r_content"));
         rdo.setR_reg_date(rs.getString("r_reg_date"));
+        rdo.setrWriterId(rs.getInt("r_writer_id"));
         return rdo;
     }
 }

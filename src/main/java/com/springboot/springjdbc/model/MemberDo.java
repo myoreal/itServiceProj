@@ -15,6 +15,7 @@ public class MemberDo {
     private String provider;
     private String providerId;
     private String role;
+    private String password;
 
     // Getter & Setter
     public int getM_no() { return m_no; }
@@ -29,5 +30,7 @@ public class MemberDo {
     public void setProviderId(String providerId) { this.providerId = providerId; }
     public String getRole() { return role; }
     public void setRole(String role) { this.role = role; }
+    public String getPassword() { return password; }
+    public void setPassword(String password) { this.password = password; }
 }
 

@@ -13,6 +13,7 @@ import org.springframework.security.oauth2.client.authentication.OAuth2Authentic
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import com.springboot.springjdbc.model.MemberDao;
 import com.springboot.springjdbc.model.MemberDo;
@@ -32,14 +33,11 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-            .csrf(csrf -> csrf.disable())
-            .authorizeHttpRequests(auth -> auth
-                // 복잡한 Matcher 대신 문자열로 직관적으로 지정
-                .requestMatchers("/", "/login.do", "/getBoardList.do", "/getOneBoard.do", "/searchBoardList.do", "/error").permitAll()
-                .requestMatchers("/css/**", "/js/**", "/upload/**", "/images/**", "/boardviews/**").permitAll()
-                
-                // 그 외 모든 주소는 로그인 필요
-                .anyRequest().authenticated()
+        .csrf(csrf -> csrf.disable())
+        .authorizeHttpRequests(auth -> auth
+            // ★★★ 모든 요청(/**)을 다 허용(permitAll) ★★★
+            // 로그인 체크는 이제 BoardControllerSpring에서 직접 함
+            .requestMatchers(new AntPathRequestMatcher("/**")).permitAll()
             )
             .oauth2Login(oauth2 -> oauth2
                 .loginPage("/login.do") // 로그인 페이지 URL

@@ -2,8 +2,10 @@ package com.springboot.springjdbc.model;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
@@ -29,6 +31,27 @@ public class MemberDao {
         String sql = "INSERT INTO member (email, name, provider, provider_id, role, reg_date) VALUES (?, ?, ?, ?, 'USER', NOW())";
         jdbcTemplate.update(sql, email, name, provider, providerId);
     }
+    
+    // 로컬 회원가입
+    public void insertMemberLocal(MemberDo member) {
+        // provider_id는 필수값이므로, 로컬 유저를 위한 고유 ID를 임의로 생성해서 넣습니다.
+        String randomId = "local_" + UUID.randomUUID().toString().substring(0, 8);
+        
+        String sql = "INSERT INTO member (email, password, name, provider, provider_id, role, reg_date) VALUES (?, ?, ?, 'local', ?, 'USER', NOW())";
+        
+        // 순서: email, password, name, (provider_id자리), ...
+        jdbcTemplate.update(sql, member.getEmail(), member.getPassword(), member.getName(), randomId);
+    }
+
+    // ★★★ 로컬 로그인 확인 (이메일 & 비번 일치 확인) ★★★
+    public MemberDo loginCheck(String email, String password) {
+        String sql = "SELECT * FROM member WHERE email = ? AND password = ? AND provider = 'local'";
+        try {
+            return jdbcTemplate.queryForObject(sql, new Object[]{email, password}, new MemberRowMapper());
+        } catch (EmptyResultDataAccessException e) {
+            return null; // 일치하는 회원 없음
+        }
+    }
 }
 
 class MemberRowMapper implements RowMapper<MemberDo> {
@@ -39,6 +62,7 @@ class MemberRowMapper implements RowMapper<MemberDo> {
         member.setEmail(rs.getString("email"));
         member.setName(rs.getString("name"));
         member.setRole(rs.getString("role"));
+        member.setProviderId(rs.getString("provider_id"));
         return member;
     }
 }

@@ -24,7 +24,7 @@
 
     <div class="container write-container">
         <div class="form-card">
-            <h3 class="fw-bold mb-4 text-center">✏️ 새 글 등록</h3>
+            <h3 class="fw-bold mb-4 text-center"> 새 글 등록</h3>
             
             <form action="insertBoardProc.do" method="post" enctype="multipart/form-data">
                 
@@ -33,7 +33,7 @@
                         <label class="form-label fw-bold small">분류</label>
                         <select name="category" class="form-select">
                             <option value="제안"> 기능 제안</option>
-                            <option value="버그"> 버그/오류</option>
+                            <option value="오류"> 버그/오류</option>
                             <option value="문의"> 기타 문의</option>
                         </select>
                     </div>
@@ -68,5 +68,10 @@
         </div>
     </div>
 
+	<!-- Footer -->
+	<footer class="text-center py-4 text-muted border-top mt-5 bg-white">
+	    <small>&copy; 2025 IT Service KIM Project. All rights reserved.</small>
+	</footer>
+	
 </body>
 </html>

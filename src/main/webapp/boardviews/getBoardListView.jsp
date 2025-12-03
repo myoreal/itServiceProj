@@ -159,6 +159,10 @@
         <div id="top5-section" class="d-flex align-items-center mb-3">
             <h4 class="fw-bold mb-0"><i class="fa-solid fa-fire text-danger me-2"></i>인기 게시글 Top 5</h4>
             <span class="badge bg-danger ms-2">HOT</span>
+			
+			<a href="getRankBoardList.do" class="btn btn-outline-dark btn-sm ms-auto rounded-pill px-3 fw-bold">
+		        전체 랭킹 보기 <i class="fa-solid fa-chevron-right ms-1"></i>
+		    </a>
         </div>
         
         <div class="row flex-nowrap overflow-auto pb-3 mb-4" style="scrollbar-width: thin;">
@@ -249,7 +253,7 @@
         <small>&copy; 2025 IT Service KIM Project. All rights reserved.</small>
     </footer>
 
-    <!-- Bootstrap JS (이게 있어야 움직입니다!) -->
+    <!-- Bootstrap JS  -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

@@ -60,5 +60,12 @@
             </form>
         </div>
     </div>
+	
+	<!-- Footer -->
+	<footer class="text-center py-4 text-muted border-top mt-5 bg-white">
+	    <small>&copy; 2025 IT Service KIM Project. All rights reserved.</small>
+	</footer>
+	
+	
 </body>
 </html>

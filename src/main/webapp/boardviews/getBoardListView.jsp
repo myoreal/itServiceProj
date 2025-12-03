@@ -123,13 +123,18 @@
                 </div>
             </div>
             <!-- 슬라이드 2 -->
-            <div class="carousel-item bg-gradient-2">
-                <div class="carousel-caption">
-                    <h1 class="hero-title">실시간 인기 이슈 Top 5</h1>
-                    <p class="hero-desc">사용자들이 가장 원하는 기능이 무엇인지 확인해보세요.<br>투표를 통해 개발 우선순위를 결정합니다.</p>
-                    <a href="#top5-section" class="btn btn-outline-light btn-hero border-2"> 랭킹 확인하기 <i class="fa-solid fa-arrow-down ms-1"></i></a>
-                </div>
-            </div>
+			<div class="carousel-item bg-gradient-2">
+			    <div class="carousel-caption">
+			        <h1 class="hero-title">실시간 인기 이슈 Top 5</h1>
+			        <p class="hero-desc">사용자들이 가장 원하는 기능이 무엇인지 확인해보세요.<br>투표를 통해 개발 우선순위를 결정합니다.</p>
+			        
+			       
+			        <a href="getRankBoardList.do" class="btn btn-outline-light btn-hero border-2"> 
+			            랭킹 확인하기 <i class="fa-solid fa-arrow-right ms-1"></i>
+			        </a>
+			        
+			    </div>
+			</div>
             <!-- 슬라이드 3 -->
             <div class="carousel-item bg-gradient-3">
                 <div class="carousel-caption">

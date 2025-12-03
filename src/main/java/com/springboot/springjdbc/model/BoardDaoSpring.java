@@ -16,7 +16,7 @@ public class BoardDaoSpring {
 
     // 1. 글 쓰기 (writer_id 추가됨)
     public void insertBoard(BoardDo bdo) {
-        // ★ 이름(writer)과 회원번호(writer_id)를 둘 다 저장합니다.
+        // ★ 이름(writer)과 회원번호(writer_id)를 둘 다 저장
         String sql = "insert into board (title, writer, content, category, vote_count, status, reg_date, filename, writer_id) values(?, ?, ?, ?, 0, '접수', now(), ?, ?)";
         jdbcTemplate.update(sql, bdo.getTitle(), bdo.getWriter(), bdo.getContent(), bdo.getCategory(), bdo.getFilename(), bdo.getWriterId());
     }    
@@ -29,7 +29,6 @@ public class BoardDaoSpring {
         return (ArrayList<BoardDo>)jdbcTemplate.query(sql, args, new BoardRowMapper());
     }
 
-    // --- 나머지 메소드는 쿼리 변경 없음 (RowMapper만 변경됨) ---
     
     public ArrayList<BoardDo> getBoardList(){
         String sql = "select * from board order by no desc";                 
@@ -54,7 +53,7 @@ public class BoardDaoSpring {
         return jdbcTemplate.queryForObject(sql, args, new BoardRowMapper() );
     }
     
- // ★★★ [신규 1] 내가 좋아요 누른 글 목록 가져오기 (JOIN 쿼리) ★★★
+ // ★★★내가 좋아요 누른 글 목록 가져오기 (JOIN 쿼리) ★★★
     public ArrayList<BoardDo> getMyLikedBoardList(int m_no) {
         System.out.println("(Spring JDBC) 좋아요 누른 글 조회: " + m_no);
         // board 테이블과 board_like 테이블을 합쳐서(JOIN), 내가(m_no) 좋아요한 글만 가져옴
@@ -66,14 +65,14 @@ public class BoardDaoSpring {
         return (ArrayList<BoardDo>)jdbcTemplate.query(sql, args, new BoardRowMapper());
     }
 
-    // ★★★ [신규 2] 이미 좋아요 눌렀는지 확인 (중복 방지) ★★★
+    // ★★★이미 좋아요 눌렀는지 확인 (중복 방지) ★★★
     public boolean checkLike(int b_no, int m_no) {
         String sql = "SELECT count(*) FROM board_like WHERE b_no=? AND m_no=?";
         Integer count = jdbcTemplate.queryForObject(sql, Integer.class, b_no, m_no);
         return count != null && count > 0; // 0보다 크면 이미 누른 것
     }
 
-    // ★★★ [신규 3] 좋아요 기록 저장 ★★★
+    // ★★★ 좋아요 기록 저장 ★★★
     public void insertLike(int b_no, int m_no) {
         String sql = "INSERT INTO board_like (b_no, m_no) VALUES (?, ?)";
         jdbcTemplate.update(sql, b_no, m_no);
@@ -107,6 +106,16 @@ public class BoardDaoSpring {
         System.out.println("(Spring JDBC) 조회수 증가 !!");
         String sql = "update board set view_count = view_count + 1 where no=?";
         jdbcTemplate.update(sql, seq);
+    }
+    
+ // 전체 랭킹 리스트 가져오기 (좋아요 높은 순 -> 조회수 높은 순)
+    public ArrayList<BoardDo> getRankedBoardList() {
+        System.out.println("(Spring JDBC) 전체 랭킹 리스트 조회 !!");
+        
+        // 1순위: 좋아요, 2순위: 조회수, 3순위: 최신순
+        String sql = "SELECT * FROM board ORDER BY vote_count DESC, view_count DESC, no DESC";
+        
+        return (ArrayList<BoardDo>)jdbcTemplate.query(sql, new BoardRowMapper());
     }
 }
 

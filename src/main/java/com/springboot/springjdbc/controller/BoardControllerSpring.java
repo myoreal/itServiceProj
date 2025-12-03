@@ -38,7 +38,7 @@ public class BoardControllerSpring {
         return "getBoardListView";
     }
 
-    // ★★★ [핵심] 글쓰기 처리 부분 ★★★
+    // ★★★글쓰기 처리 부분 ★★★
     @RequestMapping(value="/insertBoardProc.do")
     public String insertBoardProc(BoardDo bdo, 
             @RequestParam(value="uploadFile", required=false) MultipartFile uploadFile, 
@@ -74,7 +74,7 @@ public class BoardControllerSpring {
         return "redirect:getBoardList.do";
     }
     
-    // ★★★ [수정 1] 좋아요 처리 (중복 방지 & 기록) ★★★
+    // ★★★ 좋아요 처리 (중복 방지 & 기록) ★★★
     @RequestMapping(value="/voteBoard.do")
     public String voteBoard(@RequestParam("seq") int seq, HttpSession session) {
         
@@ -100,7 +100,7 @@ public class BoardControllerSpring {
         return "redirect:getOneBoard.do?seq=" + seq;
     }
 
-    // ★★★ [수정 2] 마이페이지 (좋아요 목록 추가) ★★★
+    // ★★★ 마이페이지 (좋아요 목록 추가) ★★★
     @RequestMapping(value="/myPage.do")
     public String myPage(HttpSession session, Model model) {
         MemberDo member = (MemberDo) session.getAttribute("member");
@@ -191,5 +191,15 @@ public class BoardControllerSpring {
         ArrayList<BoardDo> bList = bdaoSpring.searchBoardList(searchCon, searchKey);        
         model.addAttribute("bList", bList);
         return "getBoardListView"; 
+    }
+    
+ // 인기순 게시판 (랭킹 페이지) 이동
+    @RequestMapping(value="/getRankBoardList.do")
+    public String getRankBoardList(Model model) {
+        // 1. 전체 랭킹 데이터 가져오기
+        ArrayList<BoardDo> rankList = bdaoSpring.getRankedBoardList();
+        // 2. 화면에 전달
+        model.addAttribute("rankList", rankList);
+        return "getRankBoardListView"; 
     }
 }
